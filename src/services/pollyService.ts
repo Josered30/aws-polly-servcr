@@ -21,13 +21,13 @@ const pollyClient = new PollyClient({
 export async function getAudio(text: string): Promise<Readable | null> {
   const audio = await pollyClient.send(
     new SynthesizeSpeechCommand({
-      Engine: Engine.NEURAL,
+      Engine: Engine.STANDARD,
       OutputFormat: "mp3",
       Text: text,
       TextType: "text",
-      VoiceId: "Joanna",
+      VoiceId: "Lucia",
       SampleRate: "22050",
-      LanguageCode: "en-US",
+      LanguageCode: "es-ES",
     })
   );
   if (audio.AudioStream instanceof Readable) {
