@@ -82,9 +82,6 @@ export async function botInteraction(
     sessionId: botInteractionInput.sessionId,
   });
 
-  console.log(command);
-  console.log(FormatType.TEXT, botInteractionInput.requestType);
-
   try {
     const response = await lexClient.send(command);
     if (botInteractionInput.responseType === FormatType.TEXT) {
@@ -102,8 +99,10 @@ export async function botInteraction(
         };
       }
     }
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    return {
+      error: e.toString(),
+    };
   }
   return null;
 }

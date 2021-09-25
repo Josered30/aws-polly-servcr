@@ -22,7 +22,7 @@ export async function interact(req: Request, res: Response) {
       data.output.pipe(res);
     } else {
       const result: BotInteractionOutput = {
-        error: "error",
+        error: "AudioStream is not Readable",
       };
       res.json(result);
     }
