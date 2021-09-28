@@ -53,6 +53,15 @@ function decodeTextUtil(value: string): Promise<Buffer> {
   });
 }
 
+function streamToString(stream: Readable): Promise<string> {
+  const chunks: Buffer[] = [];
+  return new Promise((resolve, reject) => {
+    stream.on("data", (chunk: string) => chunks.push(Buffer.from(chunk)));
+    stream.on("error", (err) => reject(err));
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("base64")));
+  });
+}
+
 export async function botInteraction(
   botInteractionInput: BotInteractionInput
 ): Promise<BotInteractionOutput | null> {
@@ -95,13 +104,11 @@ export async function botInteraction(
     } else {
       if (response.audioStream && response.messages) {
         const buffer = await decodeTextUtil(response.messages);
-
-        const audioOutputReadable = response.audioStream as Readable;
-        const audioBuffer = audioOutputReadable.read();
+        const audio = await streamToString(response.audioStream as Readable);
 
         return {
           textOutput: JSON.parse(buffer.toString()),
-          audioOutput: audioBuffer,
+          audioOutput: audio,
         };
       }
     }
