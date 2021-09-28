@@ -1,6 +1,11 @@
 import { BotType } from "./enums/botType";
 import { FormatType } from "./enums/formatType";
 
+interface TextOutput {
+  content: string;
+  contentType: string;
+}
+
 export interface BotInteractionInput {
   input: any;
   responseType: FormatType;
@@ -10,6 +15,7 @@ export interface BotInteractionInput {
 }
 
 export interface BotInteractionOutput {
-  output?: any;
+  textOutput?: TextOutput[];
+  audioOutput?: Buffer;
   error?: string;
 }

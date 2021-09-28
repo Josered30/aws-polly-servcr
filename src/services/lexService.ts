@@ -12,6 +12,7 @@ import {
 } from "../models/botInteraction";
 import { BotType } from "../models/enums/botType";
 import { FormatType } from "../models/enums/formatType";
+import { Readable } from "stream";
 
 interface BotData {
   botId: string;
@@ -39,7 +40,7 @@ export const lexClient = new LexRuntimeV2Client({
   }),
 });
 
-function decodeText(value: string): Promise<Buffer> {
+function decodeTextUtil(value: string): Promise<Buffer> {
   const data = Buffer.from(value, "base64");
   return new Promise((resolve, reject) => {
     gunzip(data, (err, buffer) => {
@@ -86,16 +87,21 @@ export async function botInteraction(
     const response = await lexClient.send(command);
     if (botInteractionInput.responseType === FormatType.TEXT) {
       if (response.messages) {
-        const buffer = await decodeText(response.messages);
-        const result: BotInteractionOutput = {
-          output: JSON.parse(buffer.toString()),
+        const buffer = await decodeTextUtil(response.messages);
+        return {
+          textOutput: JSON.parse(buffer.toString()),
         };
-        return result;
       }
     } else {
-      if (response.audioStream) {
+      if (response.audioStream && response.messages) {
+        const buffer = await decodeTextUtil(response.messages);
+
+        const audioOutputReadable = response.audioStream as Readable;
+        const audioBuffer = audioOutputReadable.read();
+
         return {
-          output: response.audioStream,
+          textOutput: JSON.parse(buffer.toString()),
+          audioOutput: audioBuffer,
         };
       }
     }
