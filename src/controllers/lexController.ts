@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { BotInteractionInput } from "../models/botInteraction";
-import { botInteraction } from "../services/lexService";
+import { parseData } from "../services/lexService";
 
-export async function interact(req: Request, res: Response) {
+export async function index(req: Request, res: Response) {
   const botInteractionInput: BotInteractionInput = req.body;
   console.log(botInteractionInput);
-  const data = await botInteraction(botInteractionInput);
+  const data = await parseData(botInteractionInput);
   res.json(data);
 }

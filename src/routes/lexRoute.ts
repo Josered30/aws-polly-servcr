@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { interact } from "../controllers/lexController";
+import { Request, Response, Router } from "express";
+import { index } from "../controllers/lexController";
 
 const router = Router();
 
-router.route("/").post(interact);
+router.route("/").post(index);
 
 export default router;

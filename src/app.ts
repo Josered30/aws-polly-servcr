@@ -1,7 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import pollyRoutes from "./routes/pollyRoute";
 import lexRoutes from "./routes/lexRoute";
 
 const app = express();
@@ -15,8 +14,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/polly", pollyRoutes);
 app.use("/api/lex", lexRoutes);
 
 export default app;
